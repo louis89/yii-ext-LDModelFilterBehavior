@@ -6,8 +6,9 @@
  */
 
 /**
- * LDModelFilterBehavior is designed to simplify filtering arrays of data that are associated with a model, but not derived from a database source.
- * This is especially useful when it is necessary to use {@link CArrayDataProvider} since that class only supports pagination and sorting, not filtering.
+ * LDModelFilterBehavior converts and filters arrays of data that are associated with a model. 
+ * This behavior will convert/filter arrays of models, arrays, or a mixture of both.
+ *
  * 
  * To use LDModelFilterBehavior attach this behavior to the model that your raw data array is associated with either inline 
  * using {@link CComponent::attachBehavior()} or {@link CComponent::attachBehaviors()} or statically as follows.
@@ -19,17 +20,31 @@
  * 		return array(
  * 			'LDModelFilterBehavior' => array(
  * 				'class' => 'ext.LDModelFilterBehavior.LDModelFilterBehavior', // or wherever this class is located in your app
- * 				'callbacks' => array() // optionally specify this attribute if you always need custom comparisons done on certain attributes in your data 
+ * 				'callbacks' => array() // optionally specify this option if you want to use callbacks for custom comparisons for certain attributes in your data 
  * 			)
  * 		);
  * }
  * </pre>
  * 
  * When you want to filter an array of data set the attribute values of your model as you would normally when filtering data using {@link CActiveDataProvider}.
- * Then call the {@see LDModelFilterBehavior::filter()} method that this behavior has added to your model. Pass the method your raw data and
+ * Then call the {@see LDModelFilterBehavior::filter()} method that this behavior has added to your model. Pass to that method your raw data and
  * the filtered form of that data will be returned to you. 
  * 
- * A basic example using a {@link CArrayDataProvider} with a {@link CGridView}:
+ * A simple example to convert an array of models to an array of arrays where each array is a data row with properties as keys and values as values
+ * 
+ * FooModel::model()->filter(FooModel::model()->findAll());
+ * 
+ * A slightly more complex example involving conversion and filtering
+ * (note that if FooModel has non-database attributes set the findAll() method will not filter the data by those values, but the filter method will)
+ * 
+ *  $fooModel = new FooModel();
+ * 	if(isset($_POST['FooModel']))
+ * 	{
+ * 		$fooModel->setAttributes($_POST['FooModel']);
+ * 	}
+ * 	$filteredRawFooData = $fooModel->filter($fooModel->findAll());
+ * 
+ * A complete example using a {@link CArrayDataProvider} with a {@link CGridView} and a mystery data source
  * 
  * Controller action:
  * <pre>
@@ -60,7 +75,7 @@
  *	);
  * </pre>
  * 
- * By default this behavior will only filter, or unset, a data row if BOTH of the following conditions are TRUE. 
+ * By default this behavior will only filter, or unset, a data row if BOTH of the following conditions are true. 
  * 	1. The function empty() returns true on the associated model attribute's value.
  * 	2. There is a partial match between the string value of the associated model attribute's value and the raw data value.
  * 
@@ -75,12 +90,15 @@
  * 	2. The model's attribute's value
  * 	3. The associated raw data row's attribute's value
  * 
- * Also by default the {@see LDModelFilterBehavior::filter()} method will only compare safe attribute values. This can be disabled
+ * By default the {@see LDModelFilterBehavior::filter()} method will only compare safe attribute values. This can be disabled
  * by passing false as the argument to the safeOnly parameter of the {@see LDModelFilterBehavior::filter()} method.
  * 
- * @property $ignoreUndefinedAttributes boolean If true and a value cannot be normalized before comparison it will be ignored. If false filtering will attempt to continue normally, any errors will propogate as expected. Defaults to true.
- * @property $normalizeData boolean If true data will be normalized to a raw array, otherwise data will only be filtered, not altered. Defaults to true.
- * @property $callbacks array a list of comparison callbacks in the form array('attribute name' => 'callable')
+ * Each of the following properties can be overriden at runtime by passing a non-null value to their respective arguments of the filter() method
+ * 
+ * @property boolean $ignoreUndefinedAttributes If true and a value cannot be normalized before comparison it will be ignored. If false filtering will attempt to continue normally, any errors will propogate as expected. Defaults to true.
+ * @property boolean $normalizeData If true data will be normalized to a raw array, otherwise data will only be filtered, not altered. Defaults to true.
+ * @property mixed $attributeNames If true only the data will be filtered only by safe attribute names. If an array the data will be filtered by the attribute names specified by the array.
+ * @property array $callbacks a list of comparison callbacks in the form array('attribute name' => 'callable')
  * 
  * @author Louis A. DaPrato <l.daprato@gmail.com>
  */
@@ -101,7 +119,10 @@ class LDModelFilterBehavior extends CModelBehavior
 	public $normalizeData = true;
 	
 	/**
-	 * @var mixed
+	 * The attribute name to filter the data by. 
+	 * If true only safe attribute names or if an array then the data will be filtered only by those attributes
+	 * 
+	 * @var mixed True meaning safe attribute names only or an array of attribute names to filter the data by
 	 */
 	public $attributeNames = true;
 	
