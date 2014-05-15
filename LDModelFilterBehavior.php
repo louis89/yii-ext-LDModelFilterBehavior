@@ -2,7 +2,7 @@
 /**
  * LDModelFilterBehavior class file
  * 
- * @author Louis DaPrato <l.daprato@gmail.com>
+ * @author Louis A. DaPrato <l.daprato@gmail.com>
  */
 
 /**
@@ -82,7 +82,7 @@
  * @property $normalizeData boolean If true data will be normalized to a raw array, otherwise data will only be filtered, not altered. Defaults to true.
  * @property $callbacks array a list of comparison callbacks in the form array('attribute name' => 'callable')
  * 
- * @author Louis DaPrato <l.daprato@gmail.com>
+ * @author Louis A. DaPrato <l.daprato@gmail.com>
  */
 class LDModelFilterBehavior extends CModelBehavior
 {
