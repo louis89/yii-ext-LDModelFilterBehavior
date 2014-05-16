@@ -39,7 +39,7 @@
  * FooModel::model()->filter(FooModel::model()->findAll());
  * 
  * A slightly more complex example involving conversion and filtering
- * (note that if FooModel has non-database attributes set the findAll() method will not filter the data by those values, but the filter method will)
+ * (note that if FooModel has non-database attributes set the findAll() method will not filter the data by those values, but the filter method provided by this behavior will)
  * 
  *  $fooModel = new FooModel();
  * 	if(isset($_POST['FooModel']))

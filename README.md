@@ -35,7 +35,7 @@ the filtered form of that data will be returned to you.
 FooModel::model()->filter(FooModel::model()->findAll());
 
 ###A slightly more complex example involving conversion and filtering
-(note that if FooModel has non-database attributes set the findAll() method will not filter the data by those values, but the filter method will)
+(note that if FooModel has non-database attributes set the findAll() method will not filter the data by those values, but the filter method provided by this behavior will)
 
  $fooModel = new FooModel();
 	if(isset($_POST['FooModel']))
@@ -76,8 +76,8 @@ $this->widget('zii.widgets.grid.CGridView',
 ```
 
 By default this behavior will only filter, or unset, a data row if BOTH of the following conditions are true. 
-	1. The function empty() returns true on the associated model attribute's value.
-	2. There is a partial match between the string value of the associated model attribute's value and the raw data value.
+1. The function empty() returns true on the associated model attribute's value.
+2. There is a partial match between the string value of the associated model attribute's value and the raw data value.
 
 If you need to specify different comparisons for your data you may optionally specify custom callbacks for comparing attributes 
 by setting the LDModelFilterBehavior::$callbacks property. This property can be set in the behavior's configuration or 
@@ -86,9 +86,9 @@ If a callback is set for a particular attribute the return value of your defined
 row should be filtered or not.
 Your callback must strictly return false for the data row to be filtered. Any oher value will not cause the data row to be filtered.
 Your callback should accept 3 parameters as follows:
-	1. The name of the attribute
-	2. The model's attribute's value
-	3. The associated raw data row's attribute's value
+1. The name of the attribute
+2. The model's attribute's value
+3. The associated raw data row's attribute's value
 
 By default the LDModelFilterBehavior::filter() method will only compare safe attribute values. This can be disabled
 by passing false as the argument to the safeOnly parameter of the LDModelFilterBehavior::filter() method.
